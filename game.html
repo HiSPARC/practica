@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+    <head>
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
+        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+        <script>
+        
+            var coinc = new Array;
+            var station = new Array;
+            var url = new Array;
+            station[0]='102';
+            station[1]='104';
+            station[2]='501';
+            station[3]='502';
+            station[4]='508';
+            station[5]='506';
+            for(i = 0; i < station.length; i++){
+                url[i] = 'http:/data.hisparc.nl/data/' + station[i] + '/events';
+            }
+        
+            function getData(URL, j) {
+                    $.get(URL,function(data){
+                    var event = new Array();
+                    var dataStr = new String(data); // parsed data als string
+                    var record = dataStr.split('\n'); // maakt een array met records
+                    for(i = 0; i < record.length; i++){ // verwijdert commentaar regels
+                        if(record[0].substr(0,1) == "#") {
+                            record.splice(0,1);
+                            i = i-1;
+                        }
+                    }
+                    for(i = 0; i < record.length; i++){
+                        event[i] = record[i].split('\t'); // maakt een 2d array met event informatie
+                    }
+                    coinc[j] = event; // maakt een 3 d array met coincidentie informatie
+                    j++
+                    if(j < station.length) { getData(url[j], j) }
+                    else { 
+                        var output = '<table border = "1"><tr>';
+                        for(i = 0; i < station.length; i++){
+                            output += '<td colspan = "2">station '+station[i]+'</td>';
+                        }
+                        for(h=0;h<100;h++){
+                            output += '</tr><tr>';
+                            for(i = 0; i < station.length; i++){
+                                output += '<td>'+coinc[i][h][1]+'</td><td>'+coinc[i][h][3]+'</td>';
+                            }
+                        }
+                        output += '</tr></table>';
+                        $( "#CSVTable" ).append( output );
+                    }
+                });
+            }
+        
+            $(function() {
+                getData(url[0], 0);
+            });
+        </script>
+    </head>
+    <body>
+        <table>
+        </table>
+        <div id="CSVTable"></div>
+    </body>
+</html>
