@@ -17,9 +17,16 @@
             station[3]='502';
 //            station[4]='508';
             for(i = 0; i < station.length; i++){
-                url[i] = 'http:/data.hisparc.nl/data/' + station[i] + '/events';
+                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events';    
             }
-        
+            
+            function padZero(number, length) {
+                var str = '' + number;
+                while (str.length < length) {
+                    str = '0' + str;}
+                return str;
+            }
+                    
             function getData(URL, j) {
                     $.get(URL,function(data){
                     var event = new Array();
@@ -48,6 +55,7 @@
                             first = 0;
                             firstTime = '23:59:59:999999999';
                             for(i = 0; i < station.length; i++){
+                                events[i][0][3] = padZero(events[i][0][3], 9);
                                 time = events[i][0][1] + ':' + events[i][0][3];
                                 if(time < firstTime){
                                     firstTime = time; 
@@ -64,7 +72,7 @@
                     }
                 });
             }
-        
+            
             $(function() {
                 getData(url[0], 0);
             });
