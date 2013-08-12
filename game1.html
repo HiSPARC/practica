@@ -6,18 +6,25 @@
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
         <script>
         
-            var kMax = 0;
-            var events = new Array();
-            var coinc = new Array();
-            var station = new Array();
+            var events = new Array;
+            var coinc = new Array;
+            var station = new Array;
             var url = new Array;
             station[0]='102';
             station[1]='104';
             station[2]='501';
-            station[3]='502';
+//            station[3]='502';
 //            station[4]='508';
+//            station[5]='506';
             for(i = 0; i < station.length; i++){
                 url[i] = 'http:/data.hisparc.nl/data/' + station[i] + '/events';
+            }
+            
+            function addZero(x, n) {
+                if(x.length < n) {
+                    x = "0" + x;
+//                    addZero(x, n);
+                }
             }
         
             function getData(URL, j) {
@@ -34,18 +41,12 @@
                     for(i = 0; i < record.length; i++){
                         event[i] = record[i].split('\t'); // maakt een 2d array met event informatie
                     }
-                    events[j] = event; // maakt een 3 d array met eventsidentie informatie
-                    kMax += event.length-1;
-//                    alert(kMax + ', ' + event.length);
+                    events[j] = event; // maakt een 3 d array met coincidentie informatie
                     j++
-                    if(j < station.length) { 
-                        getData(url[j], j)
-                    }
-                    else {
+                    if(j < station.length) { getData(url[j], j) }
+                    else { 
                         var first, firstTime;
-                        var output = '<table border = "1"><tr>';
-                        for(k = 0; k < kMax; k++)     {
-                            first = 0;
+                        while(events[0].length > 10000) {
                             firstTime = '23:59:59:999999999';
                             for(i = 0; i < station.length; i++){
                                 time = events[i][0][1] + ':' + events[i][0][3];
@@ -54,13 +55,25 @@
                                     first = i;
                                 }
                             }
-                            coinc[k] = events[first][0];
-                            coinc[k].unshift(station[first]);
+                            events[first].push(station[first]);
+                            alert(events.toString);
+                            coinc.push(events[first]);
                             events[first].splice(0,1);
-                            output += '</tr><tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':'+ coinc[k][4] + '</td>';
+//                            alert(firstTime + ', '+ first);
+                        }
+/*                        var output = '<table border = "1"><tr>';
+                        for(i = 0; i < station.length; i++){
+                            output += '<td>station '+station[i]+'</td>';
+                        }
+                        for(h=0;h<10;h++){
+                            output += '</tr><tr>';
+                            for(i = 0; i < station.length; i++){
+                                output += '<td>' + coinc[i][h][1] + ':' + coinc[i][h][3] + '</td>';
+                            }
                         }
                         output += '</tr></table>';
-                        $( "#CSVTable" ).append( output );
+                        $( "#CSVTable" ).append( output );*/
+                        alert(coinc.length)
                     }
                 });
             }
