@@ -87,6 +87,7 @@
                     url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';    
                 }
                 $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+                $('#stations').menu();
                 var hour;
                 $( "#loadEvents" ).click(function() {
                     var hour = $('#hourpicker :selected').val();
@@ -101,6 +102,9 @@
                 });
             });
         </script>
+        <style>
+            .ui-menu { width: 250px; }
+        </style>
     </head>
     <body>
         <p>Date: 
@@ -134,6 +138,42 @@
            </select> 
            <input type="button" id="loadEvents" value="Load events" />
         </p>
+        <ul id="stations">
+            <li><a href="#">Amsterdam</a>
+                <ul>
+                    <li>2 St. Nicolaaslyceum</li>
+                    <li>3 Het Amsterdams Lyceum</li>
+                    <li>5 CSG Buitenveldert</li>
+                    <li>6 Damstede</li>
+                    <li>5 CSG Buitenveldert</li>
+                    <li>7 Joke Smit College</li>
+                    <li>9 Vrije Universiteit</li>
+                    <li>10 Herman Wesselink Coll.</li>
+                </ul>
+            </li>
+            <li><a href="#">Alkmaar</a>
+                <ul>
+                    <li>401 Willem Blaeu</li>
+                    <li>402 Jan Arentz</li>
+                </ul>
+            </li>
+            <li><a href="#">Haarlem</a>
+                <ul>
+                    <li>Coornhert Lyceum</li>
+                </ul>
+            </li>
+            <li><a href="#">Hoorn</a>
+                <ul>
+                    <li"><a href="#">Werenfridus</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Kennemerland</a>
+                <ul>
+                    <li>301 Jac. P. Thijsse</li>
+                    <li>302 Bonhoeffer / UvA</li>
+                </ul>
+            </li>
+        </ul>
         <div id="CSVTable"></div>
     </body>
 </html>
