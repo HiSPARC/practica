@@ -3,22 +3,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
     <head>
         <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <link rel="stylesheet" href="/resources/demos/style.css" />
         <script>
         
             var kMax = 0;
+            var hours = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'];
             var events = new Array();
             var coinc = new Array();
             var station = new Array();
             var url = new Array;
+            var year = 2013;
+            var month = 01;
+            var day = 02;
+            var hour = 01;
             station[0]='102';
             station[1]='104';
-            station[2]='501';
-            station[3]='502';
-//            station[4]='508';
-            for(i = 0; i < station.length; i++){
-                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events';    
-            }
+            station[2]='105';
+            station[3]='103';
+            station[4]='508';
+            station[5]='501';
+            station[6]='502';
             
             function padZero(number, length) {
                 var str = '' + number;
@@ -50,7 +57,7 @@
                     }
                     else {
                         var first, firstTime;
-                        var output = '<table border = "1"><tr>';
+                        var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
                         for(k = 0; k < kMax; k++)     {
                             first = 0;
                             firstTime = '23:59:59:999999999';
@@ -74,13 +81,59 @@
             }
             
             $(function() {
-                getData(url[0], 0);
+                var date = '2013-07-25';
+                var time = '00';
+                for(i = 0; i < station.length; i++){
+                    url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';    
+                }
+                $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+                var hour;
+                $( "#loadEvents" ).click(function() {
+                    var hour = $('#hourpicker :selected').val();
+                    var startTime = hours[hour];
+                    hour++;
+                    var stopTime = hours[hour]
+                    date = $('#datepicker').val();
+                    for(i = 0; i < station.length; i++){
+                        url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+startTime+':00:00&end=' + date + '+'+stopTime+':00:00';    
+                    }
+                    getData(url[0], 0);
+                });
             });
         </script>
     </head>
     <body>
-        <table>
-        </table>
+        <p>Date: 
+            <input type="text" id="datepicker" />
+            Time: 
+            <select id="hourpicker">
+                <option value="0" text="iug">00 / 01</option>
+                <option value="1">01 / 02</option>
+                <option value="2">02 / 03</option>
+                <option value="3">03 / 04</option>
+                <option value="4">04 / 05</option>
+                <option value="5">05 / 06</option>
+                <option value="6">06 / 07</option>
+                <option value="7">07 / 08</option>
+                <option value="8">08 / 09</option>
+                <option value="9">09 / 10</option>
+                <option value="10">10 / 11</option>
+                <option value="11">11 / 12</option>
+                <option value="12">12 / 13</option>
+                <option value="13">13 / 14</option>
+                <option value="14">14 / 15</option>
+                <option value="15">15 / 16</option>
+                <option value="16">16 / 17</option>
+                <option value="17">17 / 18</option>
+                <option value="18">18 / 19</option>
+                <option value="19">19 / 20</option>
+                <option value="20">20 / 21</option>
+                <option value="21">21 / 22</option>
+                <option value="22">22 / 23</option>
+                <option value="23">23 / 24</option>
+           </select> 
+           <input type="button" id="loadEvents" value="Load events" />
+        </p>
         <div id="CSVTable"></div>
     </body>
 </html>
