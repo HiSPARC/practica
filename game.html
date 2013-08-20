@@ -22,10 +22,27 @@
             station[0]='102';
             station[1]='104';
             station[2]='105';
-            station[3]='103';
+            station[3]='503';
             station[4]='508';
-            station[5]='501';
-            station[6]='502';
+//            station[5]='501';
+//            station[6]='502';
+
+            function makeMenu(id,choices){
+                var menuOut = "</ul>";
+                for(i = choices.length-1; i>=0 ; i--){
+                    menuOut = "<li><a href='#" + id + "-" + choices[i].number+"'>" + choices[i].name + "</a></li>" + menuOut;
+                }
+                menuOut = "<ul id='" + id + "'>" + menuOut;
+                $('#' + id).append(menuOut);
+            }
+        
+            function makeTabs(parentID,id,content){
+                var tabsOut = "";
+                for(i = content.length-1; i>=0 ; i--){
+                    tabsOut = "<div id='" + id + "-" + content[i].number+"'>" + "</div>" + tabsOut;
+                }
+                $('#' + parentID).append(tabsOut);
+            }
             
             function padZero(number, length) {
                 var str = '' + number;
@@ -53,7 +70,7 @@
 //                    alert(kMax + ', ' + event.length);
                     j++
                     if(j < station.length) { 
-                        getData(url[j], j)
+                        getData(url[j], j);
                     }
                     else {
                         var first, firstTime;
@@ -89,7 +106,22 @@
                 $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
                 $('#stations').menu();
                 var hour;
+                makeMenu('tabs', [{'number':'1', 'name':'Amsterdam'},{'number':'2', 'name':'Rotterdam'}]);
+                makeTabs('tabs', 'tabs', [{'number':'1', 'name':'Amsterdam'},{'number':'2', 'name':'Rotterdam'}]);
+                makeMenu('tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
+                makeTabs('tabs-1', 'tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
+                makeMenu('tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
+                makeTabs('tabs-2', 'tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
+                $( "#tabs" ).tabs();
+                $( "#tabs-1" ).tabs();
+                $( "#tabs-2" ).tabs();
+                $('#tabs-1-1').append("<p><input type='checkbox' id='tabs1-1-1' />Een school in Amsterdam Noord</p>");
+                $('#tabs-1-1').append("<p><input type='checkbox' id='tabs1-1-2' />Een andere school in Amsterdam Noord</p>");
+                $('#tabs-1-2').append("<p><input type='checkbox' id='tabs1-2-1' />Een school in Amsterdam Zuid</p>");
+                $('#tabs-2-1').append("<p><input type='checkbox' id='tabs2-1-1' />Een school in Rotterdam Oost</p>");
+                $('#tabs-2-2').append("<p><input type='checkbox' id='tabs2-2-1' />Een school in Rotterdam West</p>");
                 $( "#loadEvents" ).click(function() {
+                    $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
                     var hour = $('#hourpicker :selected').val();
                     var startTime = hours[hour];
                     hour++;
@@ -102,13 +134,10 @@
                 });
             });
         </script>
-        <style>
-            .ui-menu { width: 250px; }
-        </style>
     </head>
     <body>
         <p>Date: 
-            <input type="text" id="datepicker" />
+            <input type="text" id="datepicker" value="2013-01-01"/>
             Time: 
             <select id="hourpicker">
                 <option value="0" text="iug">00 / 01</option>
@@ -138,42 +167,8 @@
            </select> 
            <input type="button" id="loadEvents" value="Load events" />
         </p>
-        <ul id="stations">
-            <li><a href="#">Amsterdam</a>
-                <ul>
-                    <li>2 St. Nicolaaslyceum</li>
-                    <li>3 Het Amsterdams Lyceum</li>
-                    <li>5 CSG Buitenveldert</li>
-                    <li>6 Damstede</li>
-                    <li>5 CSG Buitenveldert</li>
-                    <li>7 Joke Smit College</li>
-                    <li>9 Vrije Universiteit</li>
-                    <li>10 Herman Wesselink Coll.</li>
-                </ul>
-            </li>
-            <li><a href="#">Alkmaar</a>
-                <ul>
-                    <li>401 Willem Blaeu</li>
-                    <li>402 Jan Arentz</li>
-                </ul>
-            </li>
-            <li><a href="#">Haarlem</a>
-                <ul>
-                    <li>Coornhert Lyceum</li>
-                </ul>
-            </li>
-            <li><a href="#">Hoorn</a>
-                <ul>
-                    <li"><a href="#">Werenfridus</a></li>
-                </ul>
-            </li>
-            <li><a href="#">Kennemerland</a>
-                <ul>
-                    <li>301 Jac. P. Thijsse</li>
-                    <li>302 Bonhoeffer / UvA</li>
-                </ul>
-            </li>
-        </ul>
+        <div id = "tabs">
+        </div>
         <div id="CSVTable"></div>
     </body>
 </html>
