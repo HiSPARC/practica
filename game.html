@@ -7,8 +7,8 @@
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
         <link rel="stylesheet" href="/resources/demos/style.css" />
-        <script>
         
+        <script>
             var kMax = 0;
             var hours = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'];
             var events = new Array();
@@ -52,87 +52,99 @@
             }
                     
             function getData(URL, j) {
-                    $.get(URL,function(data){
-                    var event = new Array();
-                    var dataStr = new String(data); // parsed data als string
-                    var record = dataStr.split('\n'); // maakt een array met records
-                    for(i = 0; i < record.length; i++){ // verwijdert commentaar regels
-                        if(record[0].substr(0,1) == "#") {
-                            record.splice(0,1);
-                            i = i-1;
-                        }
+                $.get(URL,function(data){
+                var event = new Array();
+                var dataStr = new String(data); // parsed data als string
+                var record = dataStr.split('\n'); // maakt een array met records
+                for(i = 0; i < record.length; i++){ // verwijdert commentaar regels
+                    if(record[0].substr(0,1) == "#") {
+                        record.splice(0,1);
+                        i = i-1;
                     }
-                    for(i = 0; i < record.length; i++){
-                        event[i] = record[i].split('\t'); // maakt een 2d array met event informatie
-                    }
-                    events[j] = event; // maakt een 3 d array met eventsidentie informatie
-                    kMax += event.length-1;
-//                    alert(kMax + ', ' + event.length);
-                    j++
-                    if(j < station.length) { 
-                        getData(url[j], j);
-                    }
-                    else {
-                        var first, firstTime;
-                        var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
-                        for(k = 0; k < kMax; k++)     {
-                            first = 0;
-                            firstTime = '23:59:59:999999999';
-                            for(i = 0; i < station.length; i++){
-                                events[i][0][3] = padZero(events[i][0][3], 9);
-                                time = events[i][0][1] + ':' + events[i][0][3];
-                                if(time < firstTime){
-                                    firstTime = time; 
-                                    first = i;
-                                }
-                            }
-                            coinc[k] = events[first][0];
-                            coinc[k].unshift(station[first]);
-                            events[first].splice(0,1);
-                            output += '</tr><tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':'+ coinc[k][4] + '</td>';
-                        }
-                        output += '</tr></table>';
-                        $( "#CSVTable" ).append( output );
-                    }
-                });
-            }
-            
-            $(function() {
-                var date = '2013-07-25';
-                var time = '00';
-                for(i = 0; i < station.length; i++){
-                    url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';    
                 }
-                $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
-                $('#stations').menu();
-                var hour;
-                makeMenu('tabs', [{'number':'1', 'name':'Amsterdam'},{'number':'2', 'name':'Rotterdam'}]);
-                makeTabs('tabs', 'tabs', [{'number':'1', 'name':'Amsterdam'},{'number':'2', 'name':'Rotterdam'}]);
-                makeMenu('tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
-                makeTabs('tabs-1', 'tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
-                makeMenu('tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
-                makeTabs('tabs-2', 'tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
-                $( "#tabs" ).tabs();
-                $( "#tabs-1" ).tabs();
-                $( "#tabs-2" ).tabs();
-                $('#tabs-1-1').append("<p><input type='checkbox' id='tabs1-1-1' />Een school in Amsterdam Noord</p>");
-                $('#tabs-1-1').append("<p><input type='checkbox' id='tabs1-1-2' />Een andere school in Amsterdam Noord</p>");
-                $('#tabs-1-2').append("<p><input type='checkbox' id='tabs1-2-1' />Een school in Amsterdam Zuid</p>");
-                $('#tabs-2-1').append("<p><input type='checkbox' id='tabs2-1-1' />Een school in Rotterdam Oost</p>");
-                $('#tabs-2-2').append("<p><input type='checkbox' id='tabs2-2-1' />Een school in Rotterdam West</p>");
-                $( "#loadEvents" ).click(function() {
-                    $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
-                    var hour = $('#hourpicker :selected').val();
-                    var startTime = hours[hour];
-                    hour++;
-                    var stopTime = hours[hour]
-                    date = $('#datepicker').val();
-                    for(i = 0; i < station.length; i++){
-                        url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+startTime+':00:00&end=' + date + '+'+stopTime+':00:00';    
+                for(i = 0; i < record.length; i++){
+                    event[i] = record[i].split('\t'); // maakt een 2d array met event informatie
+                }
+                events[j] = event; // maakt een 3 d array met eventsidentie informatie
+                kMax += event.length-1;
+                j++
+                if(j < station.length) { 
+                    getData(url[j], j);
+                }
+                else {
+                    var first, firstTime;
+                    var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
+                    for(k = 0; k < kMax; k++)     {
+                        first = 0;
+                        firstTime = '23:59:59:999999999';
+                        for(i = 0; i < station.length; i++){
+                            events[i][0][3] = padZero(events[i][0][3], 9);
+                                time = events[i][0][1] + ':' + events[i][0][3];
+                            if(time < firstTime){
+                                firstTime = time; 
+                                first = i;
+                            }
+                        }
+                        coinc[k] = events[first][0];
+                        coinc[k].unshift(station[first]);
+                        events[first].splice(0,1);
+                        output += '</tr><tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':'+ coinc[k][4] + '</td>';
                     }
-                    getData(url[0], 0);
+                    output += '</tr></table>';
+                    $( "#CSVTable" ).append( output );
+                }
+            });
+        }
+
+        $(function() {
+            var date = '2013-07-25';
+            var time = '00';
+            $.get('http://data.hisparc.nl/api/subclusters/',function(subclusters){
+                $.get('http://data.hisparc.nl/api/clusters/',function(clusters){
+                    $.get('http://data.hisparc.nl/api/stations/',function(stations){
+                        for(i = 0; i < station.length; i++){
+                            url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';
+                        }
+                        $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+                        $('#stations').menu();
+                        var hour;//alert(clusters[0].name)
+                        makeMenu('tabs', clusters);
+                        makeTabs('tabs', 'tabs', clusters);
+                        var iSub = subclusters.length-1;
+                        var subOut = new Array();
+                        for(iCl = clusters.length-1; iCl>=0; iCl--){
+                            subOut.length = 0;
+                            while((iSub >= 0)&&(subclusters[iSub].number >= clusters[iCl].number)){
+                                subOut.push(subclusters[iSub]);
+                            iSub--;
+                            }
+                            makeMenu('tabs-'+clusters[iCl].number, subOut);
+                            makeTabs('tabs-'+clusters[iCl].number, 'tabs-'+clusters[iCl].number, subOut);
+                            for(i=0; i < subOut.length; i++){
+                                $('#tabs-'+clusters[iCl].number).tabs();
+                            }
+                        }
+                        makeMenu('tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
+                        makeTabs('tabs-1', 'tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
+                        makeMenu('tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
+                        makeTabs('tabs-2', 'tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
+                        $("#tabs").tabs();
+                        $("#loadEvents" ).click(function() {
+                            $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
+                            var hour = $('#hourpicker :selected').val();
+                            var startTime = hours[hour];
+                            hour++;
+                            var stopTime = hours[hour]
+                            date = $('#datepicker').val();
+                            for(i = 0; i < station.length; i++){
+                                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+startTime+':00:00&end=' + date + '+'+stopTime+':00:00';    
+                            }
+                            getData(url[0], 0);
+                        });
+                    });
                 });
             });
+        });
         </script>
     </head>
     <body>

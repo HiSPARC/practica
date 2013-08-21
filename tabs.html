@@ -1,0 +1,54 @@
+<html lang="en">
+    <head>
+        <title>
+            a
+        </title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <link rel="stylesheet" href="http://jqueryui.com/tabs/resources/demos/style.css" />
+        <script>
+            function makeMenu(id,choices){
+                var menuOut = "</ul>";
+                for(i = choices.length-1; i>=0 ; i--){
+                    menuOut = "<li><a href='#" + id + "-" + choices[i].number+"'>" + choices[i].name + "</a></li>" + menuOut;
+                }
+                menuOut = "<ul id='" + id + "'>" + menuOut;
+                alert(menuOut);
+                $('#' + id).append(menuOut);
+            }
+        
+            function makeTabs(parentID,id,content){
+                var menuOut = "";
+                for(i = content.length-1; i>=0 ; i--){
+                    menuOut = "<div id='" + id + "-" + content[i].number+"'>" + "</div>" + menuOut;
+                }
+                alert(menuOut);
+                $('#' + parentID).append(menuOut);
+            }
+
+            $(function() {
+//                $( "#sub" ).tabs();
+                makeMenu('tabs', [{'number':'1', 'name':'Amsterdam'},{'number':'2', 'name':'Rotterdam'}]);
+                makeTabs('tabs', 'tabs', [{'number':'1', 'name':'Amsterdam'},{'number':'2', 'name':'Rotterdam'}]);
+                makeMenu('tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
+                makeTabs('tabs-1', 'tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
+                makeMenu('tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
+                makeTabs('tabs-2', 'tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
+                $( "#tabs" ).tabs();
+                $( "#tabs-1" ).tabs();
+                $( "#tabs-2" ).tabs();
+                $('#tabs-1-1').append("<p><input type='checkbox' id='tabs1-1-1' />Een school in Amsterdam Noord</p>");
+                $('#tabs-1-1').append("<p><input type='checkbox' id='tabs1-1-2' />Een andere school in Amsterdam Noord</p>");
+                $('#tabs-1-2').append("<p><input type='checkbox' id='tabs1-2-1' />Een school in Amsterdam Zuid</p>");
+                $('#tabs-2-1').append("<p><input type='checkbox' id='tabs2-1-1' />Een school in Rotterdam Oost</p>");
+                $('#tabs-2-2').append("<p><input type='checkbox' id='tabs2-2-1' />Een school in Rotterdam West</p>");
+            });
+        </script>
+    </head>
+    <body>
+        <div id = "tabs">
+        </div>
+    </body>
+</html>
