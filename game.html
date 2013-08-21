@@ -19,11 +19,11 @@
             var month = 01;
             var day = 02;
             var hour = 01;
-            station[0]='102';
-            station[1]='104';
-            station[2]='105';
-            station[3]='503';
-            station[4]='508';
+//            station[0]='102';
+//            station[1]='104';
+//            station[2]='105';
+//            station[3]='503';
+//            station[4]='508';
 //            station[5]='501';
 //            station[6]='502';
 
@@ -49,6 +49,10 @@
                 while (str.length < length) {
                     str = '0' + str;}
                 return str;
+            }
+            
+            function changeSelect(stationID){
+                station.push(stationID);
             }
                     
             function getData(URL, j) {
@@ -124,7 +128,7 @@
                             for(i=subOut.length-1; i >= 0; i--){
                                 $('#tabs-'+subOut[i].number).tabs();
                                 while((iStat >= 0)&&(stations[iStat].number > subOut[i].number)){
-                                    $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).prepend("<p><input type='checkbox' id='tabs1-1-1' />"+stations[iStat].name+"</p>");
+                                    $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).prepend("<p><input type='checkbox' onchange='changeSelect("+stations[iStat].number+")')/> " +stations[iStat].number+" "+stations[iStat].name+"</p>");
                                 iStat--;
                                 }
                             }
