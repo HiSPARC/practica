@@ -111,17 +111,22 @@
                         makeMenu('tabs', clusters);
                         makeTabs('tabs', 'tabs', clusters);
                         var iSub = subclusters.length-1;
+                        var iStat = stations.length-1;
                         var subOut = new Array();
                         for(iCl = clusters.length-1; iCl>=0; iCl--){
                             subOut.length = 0;
                             while((iSub >= 0)&&(subclusters[iSub].number >= clusters[iCl].number)){
-                                subOut.push(subclusters[iSub]);
+                                subOut.splice(0,0,subclusters[iSub]);
                             iSub--;
                             }
                             makeMenu('tabs-'+clusters[iCl].number, subOut);
                             makeTabs('tabs-'+clusters[iCl].number, 'tabs-'+clusters[iCl].number, subOut);
-                            for(i=0; i < subOut.length; i++){
-                                $('#tabs-'+clusters[iCl].number).tabs();
+                            for(i=subOut.length-1; i >= 0; i--){
+                                $('#tabs-'+subOut[i].number).tabs();
+                                while((iStat >= 0)&&(stations[iStat].number > subOut[i].number)){
+                                    $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).append("<p><input type='checkbox' id='tabs1-1-1' />"+stations[iStat].name+"</p>");
+                                iStat--;
+                                }
                             }
                         }
                         makeMenu('tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
