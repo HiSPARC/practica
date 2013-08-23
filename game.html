@@ -17,33 +17,21 @@
             var url = new Array;
             var year = 2013;
             var month = 01;
-            var day = 02;
+            var day = 01;
             var hour = 01;
-//            station[0]='102';
-//            station[1]='104';
-//            station[2]='105';
-//            station[3]='503';
-//            station[4]='508';
-//            station[5]='501';
-//            station[6]='502';
 
             function makeMenu(id,choices){
                 var menuOut = "</ul>";
+                var tabsOut = "";
                 for(i = choices.length-1; i>=0 ; i--){
                     menuOut = "<li><a href='#" + id + "-" + choices[i].number+"'>" + choices[i].name + "</a></li>" + menuOut;
+                    tabsOut = "<div id='" + id + "-" + choices[i].number+"'></div>" + tabsOut;
                 }
                 menuOut = "<ul id='" + id + "'>" + menuOut;
                 $('#' + id).append(menuOut);
+                $('#' + id).append(tabsOut);
             }
-        
-            function makeTabs(parentID,id,content){
-                var tabsOut = "";
-                for(i = content.length-1; i>=0 ; i--){
-                    tabsOut = "<div id='" + id + "-" + content[i].number+"'>" + "</div>" + tabsOut;
-                }
-                $('#' + parentID).append(tabsOut);
-            }
-            
+                    
             function padZero(number, length) {
                 var str = '' + number;
                 while (str.length < length) {
@@ -58,18 +46,18 @@
             function getData(URL, j) {
                 $.get(URL,function(data){
                 var event = new Array();
-                var dataStr = new String(data); // parsed data als string
-                var record = dataStr.split('\n'); // maakt een array met records
-                for(i = 0; i < record.length; i++){ // verwijdert commentaar regels
+                var dataStr = new String(data); // parses data into a string
+                var record = dataStr.split('\n'); // creates an array of records
+                for(i = 0; i < record.length; i++){ // removes comment lines
                     if(record[0].substr(0,1) == "#") {
                         record.splice(0,1);
                         i = i-1;
                     }
                 }
                 for(i = 0; i < record.length; i++){
-                    event[i] = record[i].split('\t'); // maakt een 2d array met event informatie
+                    event[i] = record[i].split('\t'); // creates a 2d array of station event information
                 }
-                events[j] = event; // maakt een 3 d array met eventsidentie informatie
+                events[j] = event; // creates 3d array with information of the selected stations
                 kMax += event.length-1;
                 j++
                 if(j < station.length) { 
@@ -78,7 +66,7 @@
                 else {
                     var first, firstTime;
                     var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
-                    for(k = 0; k < kMax; k++)     {
+                    for(k = 0; k < kMax; k++)     { // creates a chronological 2d array of event information
                         first = 0;
                         firstTime = '23:59:59:999999999';
                         for(i = 0; i < station.length; i++){
@@ -106,6 +94,9 @@
             $.get('http://data.hisparc.nl/api/subclusters/',function(subclusters){
                 $.get('http://data.hisparc.nl/api/clusters/',function(clusters){
                     $.get('http://data.hisparc.nl/api/stations/',function(stations){
+                        $( "#progressbar" ).progressbar({
+                            value: 47.5
+                        });
                         for(i = 0; i < station.length; i++){
                             url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';
                         }
@@ -113,7 +104,6 @@
                         $('#stations').menu();
                         var hour;//alert(clusters[0].name)
                         makeMenu('tabs', clusters);
-                        makeTabs('tabs', 'tabs', clusters);
                         var iSub = subclusters.length-1;
                         var iStat = stations.length-1;
                         var subOut = new Array();
@@ -124,7 +114,6 @@
                             iSub--;
                             }
                             makeMenu('tabs-'+clusters[iCl].number, subOut);
-                            makeTabs('tabs-'+clusters[iCl].number, 'tabs-'+clusters[iCl].number, subOut);
                             for(i=subOut.length-1; i >= 0; i--){
                                 $('#tabs-'+subOut[i].number).tabs();
                                 while((iStat >= 0)&&(stations[iStat].number > subOut[i].number)){
@@ -133,10 +122,6 @@
                                 }
                             }
                         }
-                        makeMenu('tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
-                        makeTabs('tabs-1', 'tabs-1', [{'number':'1', 'name':'noord'},{'number':'2', 'name':'zuid'}]);
-                        makeMenu('tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
-                        makeTabs('tabs-2', 'tabs-2', [{'number':'1', 'name':'oost'},{'number':'2', 'name':'west'}]);
                         $("#tabs").tabs();
                         $("#loadEvents" ).click(function() {
                             $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
@@ -187,6 +172,7 @@
                 <option value="23">23 / 24</option>
            </select> 
            <input type="button" id="loadEvents" value="Load events" />
+           <div id="progressbar"></div>
         </p>
         <div id = "tabs">
         </div>
