@@ -131,7 +131,7 @@
                             var stopTime = hours[hour]
                             date = $('#datepicker').val();
                             for(i = 0; i < station.length; i++){
-                                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+startTime+':00:00&end=' + date + '+'+stopTime+':00:00';    
+                                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+' + startTime + ':00:00&end=' + date + '+' + stopTime + ':00:00';    
                             }
                             getData(url[0], 0);
                         });
@@ -143,33 +143,33 @@
     </head>
     <body>
         <p>Date: 
-            <input type="text" id="datepicker" value="2013-01-01"/>
+            <input type="text" id="datepicker" value="2013-06-01"/>
             Time: 
             <select id="hourpicker">
-                <option value="0" text="iug">00 / 01</option>
-                <option value="1">01 / 02</option>
-                <option value="2">02 / 03</option>
-                <option value="3">03 / 04</option>
-                <option value="4">04 / 05</option>
-                <option value="5">05 / 06</option>
-                <option value="6">06 / 07</option>
-                <option value="7">07 / 08</option>
-                <option value="8">08 / 09</option>
-                <option value="9">09 / 10</option>
-                <option value="10">10 / 11</option>
-                <option value="11">11 / 12</option>
-                <option value="12">12 / 13</option>
-                <option value="13">13 / 14</option>
-                <option value="14">14 / 15</option>
-                <option value="15">15 / 16</option>
-                <option value="16">16 / 17</option>
-                <option value="17">17 / 18</option>
-                <option value="18">18 / 19</option>
-                <option value="19">19 / 20</option>
-                <option value="20">20 / 21</option>
-                <option value="21">21 / 22</option>
-                <option value="22">22 / 23</option>
-                <option value="23">23 / 24</option>
+                <option value="0" text="iug">00:00 - 01:00</option>
+                <option value="1">01:00 - 02:00</option>
+                <option value="2">02:00 - 03:00</option>
+                <option value="3">03:00 - 04:00</option>
+                <option value="4">04:00 - 05:00</option>
+                <option value="5">05:00 - 06:00</option>
+                <option value="6">06:00 - 07:00</option>
+                <option value="7">07:00 - 08:00</option>
+                <option value="8">08:00 - 09:00</option>
+                <option value="9">09:00 - 10:00</option>
+                <option value="10">10:00 - 11:00</option>
+                <option value="11">11:00 - 12:00</option>
+                <option value="12">12:00 - 13:00</option>
+                <option value="13">13:00 - 14:00</option>
+                <option value="14">14:00 - 15:00</option>
+                <option value="15">15:00 - 16:00</option>
+                <option value="16">16:00 - 17:00</option>
+                <option value="17">17:00 - 18:00</option>
+                <option value="18">18:00 - 19:00</option>
+                <option value="19">19:00 - 20:00</option>
+                <option value="20">20:00 - 21:00</option>
+                <option value="21">21:00 - 22:00</option>
+                <option value="22">22:00 - 23:00</option>
+                <option value="23">23:00 - 24:00</option>
            </select> 
            <input type="button" id="loadEvents" value="Load events" />
            <div id="progressbar"></div>
