@@ -21,12 +21,12 @@
             var hour = 01;
 
             function makeMenu(id, choices) {
-                var menuOut = "</ul>";
-                var tabsOut = "";
+                var menuOut = '</ul>';
+                var tabsOut = '';
                 for (i = choices.length-1; i>=0 ; i--) {
-                    menuOut = "<li><a href='#" + id + "-" + choices[i].number+"'>" + choices[i].name + "</a></li>" + menuOut;
-                    tabsOut = "<div id='" + id + "-" + choices[i].number+"'></div>" + tabsOut;}
-                menuOut = "<ul id='" + id + "'>" + menuOut;
+                    menuOut = '<li><a href="#' + id + '-' + choices[i].number+'">' + choices[i].name + '</a></li>' + menuOut;
+                    tabsOut = '<div id="' + id + '-' + choices[i].number + '"></div>' + tabsOut;}
+                menuOut = '<ul id="' + id + '">' + menuOut;
                 $('#' + id).append(menuOut);
                 $('#' + id).append(tabsOut);
             }
@@ -48,7 +48,7 @@
                 var dataStr = new String(data); // parses data into a string
                 var record = dataStr.split('\n'); // creates an array of records
                 for (i = 0; i < record.length; i++) { // removes comment lines
-                    if (record[0].substr(0, 1) == "#") {
+                    if (record[0].substr(0, 1) == '#') {
                         record.splice(0, 1);
                         i = i-1;}}
                 for (i = 0; i < record.length; i++) {
@@ -60,7 +60,7 @@
                     getData(url[j], j);}
                 else {
                     var first, firstTime;
-                    var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
+                    var output = '<table border="1"><tr><th>station</th><th>event time</th></tr>';
                     for (k = 0; k < kMax; k++) { // creates a chronological 2d array of event information
                         first = 0;
                         firstTime = '23:59:59:999999999';
@@ -72,23 +72,23 @@
                                 first = i;}}
                         coinc[k] = events[first][0];
                         coinc[k].unshift(station[first]);
-                        output += '</tr><tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':'+ coinc[k][4] + '</td>';
-                        events[first].splice(0, 1);
-                    output += '</tr></table>';
-                    $( "#CSVTable" ).append(output);}
+                        output += '<tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':' + coinc[k][4] + '</td></tr>';
+                        events[first].splice(0, 1);}
+                    output += '</table>';
+                    $('#CSVTable').append(output);}
                 });
             }
 
         $(function() {
             var date = '2013-07-25';
             var time = '00';
-            $.get('http://data.hisparc.nl/api/subclusters/', function(subclusters) {
-                $.get('http://data.hisparc.nl/api/clusters/', function(clusters) {
+            $.get('http://data.hisparc.nl/api/clusters/', function(clusters) {
+                $.get('http://data.hisparc.nl/api/subclusters/', function(subclusters) {
                     $.get('http://data.hisparc.nl/api/stations/', function(stations) {
-                        $("#progressbar").progressbar({
+                        $('#progressbar').progressbar({
                             value: 47.5});
                         for (i = 0; i < station.length; i++) {
-                            url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';}
+                            url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+' + time + ':00:00&end=' + date + '+01:00:00';}
                         $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}).val();
                         $('#stations').menu();
                         var hour; //alert(clusters[0].name)
@@ -101,14 +101,14 @@
                             while ((iSub >= 0) && (subclusters[iSub].number >= clusters[iCl].number)) {
                                 subOut.splice(0, 0, subclusters[iSub]);
                                 iSub--;}
-                            makeMenu('tabs-'+clusters[iCl].number, subOut);
+                            makeMenu('tabs-' + clusters[iCl].number, subOut);
                             for (i=subOut.length-1; i >= 0; i--) {
-                                $('#tabs-'+subOut[i].number).tabs();
+                                $('#tabs-' + subOut[i].number).tabs();
                                 while ((iStat >= 0) && (stations[iStat].number > subOut[i].number)) {
-                                    $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).prepend("<p><input type='checkbox' onchange='changeSelect("+stations[iStat].number+")')/> " +stations[iStat].number+" "+stations[iStat].name+"</p>");
+                                    $('#tabs-' + clusters[iCl].number + '-' + subOut[i].number).prepend('<p><input type="checkbox" onchange="changeSelect(' + stations[iStat].number + ')")/> ' + stations[iStat].number + ' ' + stations[iStat].name + '</p>');
                                     iStat--;}}}
-                        $("#tabs").tabs();
-                        $("#loadEvents").click(function() {
+                        $('#tabs').tabs();
+                        $('#loadEvents').click(function() {
                             var hour = $('#hourpicker :selected').val();
                             var startTime = hours[hour];
                             hour++;
@@ -124,12 +124,12 @@
         });
         </script>
     </head>
-    <body>
+    <body style="font-size: 12px;">
         <p>Date: 
             <input type="text" id="datepicker" value="2013-06-01"/>
             Time: 
             <select id="hourpicker">
-                <option value="0" text="iug">00:00 - 01:00</option>
+                <option value="0">00:00 - 01:00</option>
                 <option value="1">01:00 - 02:00</option>
                 <option value="2">02:00 - 03:00</option>
                 <option value="3">03:00 - 04:00</option>
@@ -157,7 +157,7 @@
            <input type="button" id="loadEvents" value="Load events" />
            <div id="progressbar"></div>
         </p>
-        <div id = "tabs">
+        <div id="tabs">
         </div>
         <div id="CSVTable"></div>
     </body>
