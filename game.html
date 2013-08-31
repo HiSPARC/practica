@@ -47,10 +47,8 @@
                     var event = new Array();
                     var dataStr = new String(data); // parses data into a string
                     var record = dataStr.split('\n'); // creates an array of records
-                    for (i = 0; i < record.length; i++) { // removes comment lines
-                        if (record[0].substr(0, 1) == '#') {
-                            record.splice(0, 1);
-                            i = i-1;}}
+                    while (record[0][0] == '#') { // removes comment lines
+                        record.splice(0, 1);}
                     for (i = 0; i < record.length; i++) {
                         event[i] = record[i].split('\t');} // creates a 2d array of station event information
                     events[j] = event; // creates 3d array with information of the selected stations
