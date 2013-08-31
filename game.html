@@ -44,38 +44,38 @@
                     
             function getData(URL, j) {
                 $.get(URL, function(data) {
-                var event = new Array();
-                var dataStr = new String(data); // parses data into a string
-                var record = dataStr.split('\n'); // creates an array of records
-                for (i = 0; i < record.length; i++) { // removes comment lines
-                    if (record[0].substr(0, 1) == '#') {
-                        record.splice(0, 1);
-                        i = i-1;}}
-                for (i = 0; i < record.length; i++) {
-                    event[i] = record[i].split('\t');} // creates a 2d array of station event information
-                events[j] = event; // creates 3d array with information of the selected stations
-                kMax += event.length-1;
-                j++
-                if (j < station.length) {
-                    getData(url[j], j);}
-                else {
-                    var first, firstTime;
-                    var output = '<table border="1"><tr><th>station</th><th>event time</th></tr>';
-                    for (k = 0; k < kMax; k++) { // creates a chronological 2d array of event information
-                        first = 0;
-                        firstTime = '23:59:59:999999999';
-                        for (i = 0; i < station.length; i++) {
-                            events[i][0][3] = padZero(events[i][0][3], 9);
-                                time = events[i][0][1] + ':' + events[i][0][3];
-                            if (time < firstTime) {
-                                firstTime = time; 
-                                first = i;}}
-                        coinc[k] = events[first][0];
-                        coinc[k].unshift(station[first]);
-                        output += '<tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':' + coinc[k][4] + '</td></tr>';
-                        events[first].splice(0, 1);}
-                    output += '</table>';
-                    $('#CSVTable').append(output);}
+                    var event = new Array();
+                    var dataStr = new String(data); // parses data into a string
+                    var record = dataStr.split('\n'); // creates an array of records
+                    for (i = 0; i < record.length; i++) { // removes comment lines
+                        if (record[0].substr(0, 1) == '#') {
+                            record.splice(0, 1);
+                            i = i-1;}}
+                    for (i = 0; i < record.length; i++) {
+                        event[i] = record[i].split('\t');} // creates a 2d array of station event information
+                    events[j] = event; // creates 3d array with information of the selected stations
+                    kMax += event.length-1;
+                    j++
+                    if (j < station.length) {
+                        getData(url[j], j);}
+                    else {
+                        var first, firstTime;
+                        var output = '<table border="1"><tr><th>station</th><th>event time</th></tr>';
+                        for (k = 0; k < kMax; k++) { // creates a chronological 2d array of event information
+                            first = 0;
+                            firstTime = '23:59:59:999999999';
+                            for (i = 0; i < station.length; i++) {
+                                events[i][0][3] = padZero(events[i][0][3], 9);
+                                    time = events[i][0][1] + ':' + events[i][0][3];
+                                if (time < firstTime) {
+                                    firstTime = time; 
+                                    first = i;}}
+                            coinc[k] = events[first][0];
+                            coinc[k].unshift(station[first]);
+                            output += '<tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':' + coinc[k][4] + '</td></tr>';
+                            events[first].splice(0, 1);}
+                        output += '</table>';
+                        $('#CSVTable').append(output);}
                 });
             }
 
