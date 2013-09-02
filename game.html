@@ -20,14 +20,13 @@
             var day = 01;
             var hour = 01;
 
-            function makeMenu(id,choices){
-                var menuOut = "</ul>";
-                var tabsOut = "";
-                for(i = choices.length-1; i>=0 ; i--){
-                    menuOut = "<li><a href='#" + id + "-" + choices[i].number+"'>" + choices[i].name + "</a></li>" + menuOut;
-                    tabsOut = "<div id='" + id + "-" + choices[i].number+"'></div>" + tabsOut;
-                }
-                menuOut = "<ul id='" + id + "'>" + menuOut;
+            function makeMenu(id, choices) {
+                var menuOut = '</ul>';
+                var tabsOut = '';
+                for (i = choices.length-1; i>=0 ; i--) {
+                    menuOut = '<li><a href="#' + id + '-' + choices[i].number+'">' + choices[i].name + '</a></li>' + menuOut;
+                    tabsOut = '<div id="' + id + '-' + choices[i].number + '"></div>' + tabsOut;}
+                menuOut = '<ul id="' + id + '">' + menuOut;
                 $('#' + id).append(menuOut);
                 $('#' + id).append(tabsOut);
             }
@@ -39,100 +38,82 @@
                 return str;
             }
             
-            function changeSelect(stationID){
+            function changeSelect(stationID) {
                 station.push(stationID);
             }
                     
             function getData(URL, j) {
-                $.get(URL,function(data){
-                var event = new Array();
-                var dataStr = new String(data); // parses data into a string
-                var record = dataStr.split('\n'); // creates an array of records
-                for(i = 0; i < record.length; i++){ // removes comment lines
-                    if(record[0].substr(0,1) == "#") {
-                        record.splice(0,1);
-                        i = i-1;
-                    }
-                }
-                for(i = 0; i < record.length; i++){
-                    event[i] = record[i].split('\t'); // creates a 2d array of station event information
-                }
-                events[j] = event; // creates 3d array with information of the selected stations
-                kMax += event.length-1;
-                j++
-                if(j < station.length) { 
-                    getData(url[j], j);
-                }
-                else {
-                    var first, firstTime;
-                    var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
-                    for(k = 0; k < kMax; k++)     { // creates a chronological 2d array of event information
-                        first = 0;
-                        firstTime = '23:59:59:999999999';
-                        for(i = 0; i < station.length; i++){
-                            events[i][0][3] = padZero(events[i][0][3], 9);
-                                time = events[i][0][1] + ':' + events[i][0][3];
-                            if(time < firstTime){
-                                firstTime = time; 
-                                first = i;
-                            }
-                        }
-                        coinc[k] = events[first][0];
-                        coinc[k].unshift(station[first]);
-                        events[first].splice(0,1);
-                        output += '</tr><tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':'+ coinc[k][4] + '</td>';
-                    }
-                    output += '</tr></table>';
-                    $( "#CSVTable" ).append( output );
-                }
-            });
-        }
+                $.get(URL, function(data) {
+                    var event = new Array();
+                    var dataStr = new String(data); // parses data into a string
+                    var record = dataStr.split('\n'); // creates an array of records
+                    while (record[0][0] == '#') { // removes comment lines
+                        record.splice(0, 1);}
+                    for (i = 0; i < record.length; i++) {
+                        event[i] = record[i].split('\t');} // creates a 2d array of station event information
+                    events[j] = event; // creates 3d array with information of the selected stations
+                    kMax += event.length-1;
+                    j++
+                    if (j < station.length) {
+                        getData(url[j], j);}
+                    else {
+                        var first, firstTime;
+                        var output = '<table border="1"><tr><th>station</th><th>event time</th></tr>';
+                        for (k = 0; k < kMax; k++) { // creates a chronological 2d array of event information
+                            first = 0;
+                            firstTime = '23:59:59:999999999';
+                            for (i = 0; i < station.length; i++) {
+                                events[i][0][3] = padZero(events[i][0][3], 9);
+                                    time = events[i][0][1] + ':' + events[i][0][3];
+                                if (time < firstTime) {
+                                    firstTime = time; 
+                                    first = i;}}
+                            coinc[k] = events[first][0];
+                            coinc[k].unshift(station[first]);
+                            output += '<tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':' + coinc[k][4] + '</td></tr>';
+                            events[first].splice(0, 1);}
+                        output += '</table>';
+                        $('#CSVTable').append(output);}
+                });
+            }
 
         $(function() {
             var date = '2013-07-25';
             var time = '00';
-            $.get('http://data.hisparc.nl/api/subclusters/',function(subclusters){
-                $.get('http://data.hisparc.nl/api/clusters/',function(clusters){
-                    $.get('http://data.hisparc.nl/api/stations/',function(stations){
-                        $( "#progressbar" ).progressbar({
-                            value: 47.5
-                        });
-                        for(i = 0; i < station.length; i++){
-                            url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';
-                        }
-                        $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+            $.get('http://data.hisparc.nl/api/clusters/', function(clusters) {
+                $.get('http://data.hisparc.nl/api/subclusters/', function(subclusters) {
+                    $.get('http://data.hisparc.nl/api/stations/', function(stations) {
+                        $('#progressbar').progressbar({
+                            value: 47.5});
+                        for (i = 0; i < station.length; i++) {
+                            url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+' + time + ':00:00&end=' + date + '+01:00:00';}
+                        $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'}).val();
                         $('#stations').menu();
-                        var hour;//alert(clusters[0].name)
+                        var hour; //alert(clusters[0].name)
                         makeMenu('tabs', clusters);
-                        var iSub = subclusters.length-1;
-                        var iStat = stations.length-1;
+                        var iSub = subclusters.length - 1;
+                        var iStat = stations.length - 1;
                         var subOut = new Array();
-                        for(iCl = clusters.length-1; iCl>=0; iCl--){
+                        for (iCl = clusters.length-1; iCl>=0; iCl--) {
                             subOut.length = 0;
-                            while((iSub >= 0)&&(subclusters[iSub].number >= clusters[iCl].number)){
-                                subOut.splice(0,0,subclusters[iSub]);
-                            iSub--;
-                            }
-                            makeMenu('tabs-'+clusters[iCl].number, subOut);
-                            for(i=subOut.length-1; i >= 0; i--){
-                                $('#tabs-'+subOut[i].number).tabs();
-                                while((iStat >= 0)&&(stations[iStat].number > subOut[i].number)){
-                                    $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).prepend("<p><input type='checkbox' onchange='changeSelect("+stations[iStat].number+")')/> " +stations[iStat].number+" "+stations[iStat].name+"</p>");
-                                iStat--;
-                                }
-                            }
-                        }
-                        $("#tabs").tabs();
-                        $("#loadEvents" ).click(function() {
-                            $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
+                            while ((iSub >= 0) && (subclusters[iSub].number >= clusters[iCl].number)) {
+                                subOut.splice(0, 0, subclusters[iSub]);
+                                iSub--;}
+                            makeMenu('tabs-' + clusters[iCl].number, subOut);
+                            for (i=subOut.length-1; i >= 0; i--) {
+                                $('#tabs-' + subOut[i].number).tabs();
+                                while ((iStat >= 0) && (stations[iStat].number > subOut[i].number)) {
+                                    $('#tabs-' + clusters[iCl].number + '-' + subOut[i].number).prepend('<p><input type="checkbox" onchange="changeSelect(' + stations[iStat].number + ')")/> ' + stations[iStat].number + ' ' + stations[iStat].name + '</p>');
+                                    iStat--;}}}
+                        $('#tabs').tabs();
+                        $('#loadEvents').click(function() {
                             var hour = $('#hourpicker :selected').val();
                             var startTime = hours[hour];
                             hour++;
                             var stopTime = hours[hour]
                             date = $('#datepicker').val();
-                            for(i = 0; i < station.length; i++){
-                                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+startTime+':00:00&end=' + date + '+'+stopTime+':00:00';    
-                            }
+                            for (i = 0; i < station.length; i++) {
+                                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+' + startTime + ':00:00&end=' + date + '+' + stopTime + ':00:00';}
                             getData(url[0], 0);
                         });
                     });
@@ -141,42 +122,42 @@
         });
         </script>
     </head>
-    <body>
+    <body style="font-size: 12px;">
         <p>Date: 
-            <input type="text" id="datepicker" value="2013-01-01"/>
+            <input type="text" id="datepicker" value="2013-06-01"/>
             Time: 
             <select id="hourpicker">
-                <option value="0" text="iug">00 / 01</option>
-                <option value="1">01 / 02</option>
-                <option value="2">02 / 03</option>
-                <option value="3">03 / 04</option>
-                <option value="4">04 / 05</option>
-                <option value="5">05 / 06</option>
-                <option value="6">06 / 07</option>
-                <option value="7">07 / 08</option>
-                <option value="8">08 / 09</option>
-                <option value="9">09 / 10</option>
-                <option value="10">10 / 11</option>
-                <option value="11">11 / 12</option>
-                <option value="12">12 / 13</option>
-                <option value="13">13 / 14</option>
-                <option value="14">14 / 15</option>
-                <option value="15">15 / 16</option>
-                <option value="16">16 / 17</option>
-                <option value="17">17 / 18</option>
-                <option value="18">18 / 19</option>
-                <option value="19">19 / 20</option>
-                <option value="20">20 / 21</option>
-                <option value="21">21 / 22</option>
-                <option value="22">22 / 23</option>
-                <option value="23">23 / 24</option>
+                <option value="0">00:00 - 01:00</option>
+                <option value="1">01:00 - 02:00</option>
+                <option value="2">02:00 - 03:00</option>
+                <option value="3">03:00 - 04:00</option>
+                <option value="4">04:00 - 05:00</option>
+                <option value="5">05:00 - 06:00</option>
+                <option value="6">06:00 - 07:00</option>
+                <option value="7">07:00 - 08:00</option>
+                <option value="8">08:00 - 09:00</option>
+                <option value="9">09:00 - 10:00</option>
+                <option value="10">10:00 - 11:00</option>
+                <option value="11">11:00 - 12:00</option>
+                <option value="12">12:00 - 13:00</option>
+                <option value="13">13:00 - 14:00</option>
+                <option value="14">14:00 - 15:00</option>
+                <option value="15">15:00 - 16:00</option>
+                <option value="16">16:00 - 17:00</option>
+                <option value="17">17:00 - 18:00</option>
+                <option value="18">18:00 - 19:00</option>
+                <option value="19">19:00 - 20:00</option>
+                <option value="20">20:00 - 21:00</option>
+                <option value="21">21:00 - 22:00</option>
+                <option value="22">22:00 - 23:00</option>
+                <option value="23">23:00 - 24:00</option>
             </select> 
             <input type="button" id="loadEvents" value="Load events" />
             <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
                 <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
             </a>
         </p>
-        <div id = "tabs">
+        <div id="tabs">
         </div>
         <div id="CSVTable"></div>
     </body>
