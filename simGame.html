@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+    <head>
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
+        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="scripts/jquery.jqplot.min.js"></script>
+        <script type="text/javascript" src="scripts/plugins/jqplot.cursor.min.js"></script>
+        <script type="text/javascript" src="scripts/plugins/jqplot.canvasTextRenderer.min.js"></script>
+        <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+        <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" href="/resources/demos/style.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="jsparc.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.jqplot.min.css" />
+        
+        <script>
+            var kMax = 0;
+            var hours = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'];
+            var events = new Array();
+            var coinc = new Array();
+            var station = new Array();
+            var statInfo = new Array();
+            var url = new Array;
+            var year = 2013;
+            var month = 01;
+            var day = 01;
+            var hour = 01;
+
+            function createPage2(statInfo){//alert(statInfo[0].scintillators)
+                var statList = "<select><option value='Kaart'>Kaart</option>";
+                var detMap = "<div id='detectorMap'>";
+                var statTab = "";
+                var quantity = new Array('<td>r [m]</td>','<td>&#945; [<sup>o</sup>]</td>','<td>&#946; [<sup>o</sup>]</td>','<td>MIP-peak [mV]</td>','<td>n [MIP]</td>','<td>t [ns]</td>');
+                var captionTab = "<tr><td>detector</td><td align='center' class='det1' style='border-radius:2px;'>1</td>";
+                var rRow = "";
+                var alfaRow = "";
+                var betaRow = "";
+                var peakRow = "";
+                var mipRow = "";
+                var nanoRow = "";
+                captionTab += "<td align='center' class='det2' style='border-radius:2px;'>2</td>";
+                captionTab += "<td align='center' class='det3' style='border-radius:2px;'>3</td>";
+                captionTab += "<td align='center' class='det4' style='border-radius:2px;'>4</td></tr>";
+                for(i=0; i<statInfo.length;i++){
+                    statTab += '<table id="statIn'+i+'">';
+                    statTab += captionTab;
+                    statList += "<option value="+statInfo[i].number+">"+statInfo[i].number+": "+statInfo[i].name+"</option>";
+                    detMap += "<div id='detectorMap0'>" + statInfo[i].number;
+                    detMap += '<img id="gps" src="images/gps.png" alt="gps" />';
+                    for(j=0; j<statInfo[i].scintillators; j++){
+/*                        rRow += '<td><input id="r'+i+j+'" type=text value='++' size=5 /></td>';
+                        alfaRow += '';*/
+                        detMap += '<img id="detector' + i + j + '" src="images/detector' + i+ '.png" alt="' + i + j + '" />'
+                    }
+                    detMap += "</div>";
+                }
+                statList += "</select>"
+                detMap += "</div>";
+                $("#page2").prepend(detMap);
+                $("#page2").prepend(statList);
+            }
+
+/*
+                <tr>
+                    <td>r [m]</td>
+                    <td><input id="r00" type=text value=8 size=5 /></td>
+                    <td><input id="r01" type=text value=3 size=5 /></td>
+                    <td><input id="r02" type=text value=5 size=5 /></td>
+                    <td><input id="r03" type=text value=5 size=5 /></td>
+                </tr>
+                <tr>
+                    <td>&#945; [<sup>o</sup>]</td>
+                    <td><input id="alfa00" type=text value=0 size=5 /></td>
+                    <td><input id="alfa01" type=text value=0 size=5 /></td>
+                    <td><input id="alfa02" type=text value=90 size=5 /></td>
+                    <td><input id="alfa03" type=text value=270 size=5 /></td>
+                </tr>
+                <tr>
+                    <td>&#946; [<sup>o</sup>]</td>
+                    <td><input id="beta00" type=text value=0 size=5 /></td>
+                    <td><input id="beta01" type=text value=0 size=5 /></td>
+                    <td><input id="beta02" type=text value=90 size=5 /></td>
+                    <td><input id="beta03" type=text value=270 size=5 /></td>
+                </tr>
+                <tr>
+                    <td>MIP-peak [mV]</td>
+                    <td><input id="MIP-peak00" type=text value=150 size=5 /></td>
+                    <td><input id="MIP-peak01" type=text value=150 size=5 /></td>
+                    <td><input id="MIP-peak02" type=text value=150 size=5 /></td>
+                    <td><input id="MIP-peak03" type=text value=150 size=5 /></td>
+                </tr>
+                <tr>
+                    <td colspan=5><input type="button" id="changeMap0" value="Change map" style='width:320px;'></input><td>
+                </tr>
+                <tr>
+                <td>n [MIP]</td>
+                    <td><input id="mip00" type=text size=5 /></td>
+                    <td><input id="mip01" type=text size=5 /></td>
+                    <td><input id="mip02" type=text size=5 /></td>
+                    <td><input id="mip03" type=text size=5 /></td>
+                </tr>
+                <tr>
+                    <td>t [ns]</td>
+                    <td><input id="nano00" type=text size=5 /></td>
+                    <td><input id="nano01" type=text size=5 /></td>
+                    <td><input id="nano02" type=text size=5 /></td>
+                    <td><input id="nano03" type=text size=5 /></td>
+                </tr>
+            </table>*/
+
+            function makeMenu(id,choices){
+                var menuOut = "</ul>";
+                var tabsOut = "";
+                for(i = choices.length-1; i>=0 ; i--){
+                    menuOut = "<li><a href='#" + id + "-" + choices[i].number+"'>" + choices[i].name + "</a></li>" + menuOut;
+                    tabsOut = "<div id='" + id + "-" + choices[i].number+"'></div>" + tabsOut;
+                }
+                menuOut = "<ul id='" + id + "'>" + menuOut;
+                $('#' + id).append(menuOut);
+                $('#' + id).append(tabsOut);
+            }
+                    
+            function padZero(number, length) {
+                var str = '' + number;
+                while (str.length < length) {
+                    str = '0' + str;}
+                return str;
+            }
+            
+            function changeSelect(stationID){
+                station.push(stationID);
+            }
+                    
+            function getStations(URL, j) {
+                $("#page1").hide();
+                $("#page2").show();
+                $.get(URL,function(data){
+                    //alert(data.number)
+                    statInfo.push(data);
+                    j++
+                    if(j < station.length) { 
+                        getStations(url[j], j);
+                    }
+                    else {
+                        createPage2(statInfo);
+                    }
+                });
+            }
+
+            function getData(URL, j) {
+                $.get(URL,function(data){
+                var event = new Array();
+                var dataStr = new String(data); // parses data into a string
+                var record = dataStr.split('\n'); // creates an array of records
+                for(i = 0; i < record.length; i++){ // removes comment lines
+                    if(record[0].substr(0,1) == "#") {
+                        record.splice(0,1);
+                        i--;
+                    }
+                }
+                for(i = 0; i < record.length; i++){
+                    event[i] = record[i].split('\t'); // creates a 2d array of station event information
+                }
+                events[j] = event; // creates 3d array with information of the selected stations
+                kMax += event.length-1;
+                j++
+                if(j < station.length) { 
+                    getData(url[j], j);
+                }
+                else {
+                    var first, firstTime;
+                    var output = '<table border = "1"><tr><th>station</th><th>event time</th>';
+                    for(k = 0; k < kMax; k++)     { // creates a chronological 2d array of event information
+                        first = 0;
+                        firstTime = '23:59:59:999999999';
+                        for(i = 0; i < station.length; i++){
+                            events[i][0][3] = padZero(events[i][0][3], 9);
+                                time = events[i][0][1] + ':' + events[i][0][3];
+                            if(time < firstTime){
+                                firstTime = time; 
+                                first = i;
+                            }
+                        }
+                        coinc[k] = events[first][0];
+                        coinc[k].unshift(station[first]);
+                        events[first].splice(0,1);
+                        output += '</tr><tr><td>' + coinc[k][0] + '</td><td>' + coinc[k][2] + ':'+ coinc[k][4] + '</td>';
+                    }
+                    output += '</tr></table>';
+                    $( "#CSVTable" ).append( output );
+                }
+            });
+        }
+
+        $(function() {
+            $("#page2").hide();
+            var date = '2013-07-25';
+            var time = '00';
+            $.get('http://data.hisparc.nl/api/subclusters/',function(subclusters){
+                $.get('http://data.hisparc.nl/api/clusters/',function(clusters){
+                    $.get('http://data.hisparc.nl/api/stations/',function(stations){
+                        $( "#progressbar" ).progressbar({
+                            value: 47.5
+                        });
+                        for(i = 0; i < station.length; i++){
+                            url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+time+':00:00&end=' + date + '+01:00:00';
+                        }
+                        $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+                        $('#stations').menu();
+                        var hour;//alert(clusters[0].name)
+                        makeMenu('tabs', clusters);
+                        var iSub = subclusters.length-1;
+                        var iStat = stations.length-1;
+                        var subOut = new Array();
+                        for(iCl = clusters.length-1; iCl>=0; iCl--){
+                            subOut.length = 0;
+                            while((iSub >= 0)&&(subclusters[iSub].number >= clusters[iCl].number)){
+                                subOut.splice(0,0,subclusters[iSub]);
+                            iSub--;
+                            }
+                            makeMenu('tabs-'+clusters[iCl].number, subOut);
+                            for(i=subOut.length-1; i >= 0; i--){
+                                $('#tabs-'+subOut[i].number).tabs();
+                                while((iStat >= 0)&&(stations[iStat].number > subOut[i].number)){
+                                    $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).prepend("<p><input type='checkbox' onchange='changeSelect("+stations[iStat].number+")')/> " +stations[iStat].number+" "+stations[iStat].name+"</p>");
+                                iStat--;
+                                }
+                            }
+                        }
+                        $("#tabs").tabs();
+                        $("#loadEvents" ).click(function() {
+                            $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
+                            var hour = $('#hourpicker :selected').val();
+                            var startTime = hours[hour];
+                            hour++;
+                            var stopTime = hours[hour]
+                            date = $('#datepicker').val();
+                            for(i = 0; i < station.length; i++){
+                                url[i] = 'http://data.hisparc.nl/data/' + station[i] + '/events?start=' + date + '+'+startTime+':00:00&end=' + date + '+'+stopTime+':00:00';    
+                            }
+                            getData(url[0], 0);
+                        });
+                        $("#simEvents" ).click(function() {
+                            $( "#stations" ).menu({ select: function( event, ui ) { alert(ui.item.attr("tag")); }}); 
+                            for(i = 0; i < station.length; i++){
+                                url[i] = 'http://data.hisparc.nl/api/station/' + station[i] + '/';   
+                            }
+                            getStations(url[0], 0);
+                        });
+                    });
+                });
+            });
+        });
+        </script>
+    </head>
+    <body>
+        <div id="page1">
+            <div id = "tabs">
+            </div>
+            <div id="CSVTable"></div>
+            <p>Date: 
+                <input type="text" id="datepicker" value="2013-01-01"/>
+                Time: 
+                <select id="hourpicker">
+                    <option value="0" text="iug">00 / 01</option>
+                    <option value="1">01 / 02</option>
+                    <option value="2">02 / 03</option>
+                    <option value="3">03 / 04</option>
+                    <option value="4">04 / 05</option>
+                    <option value="5">05 / 06</option>
+                    <option value="6">06 / 07</option>
+                    <option value="7">07 / 08</option>
+                    <option value="8">08 / 09</option>
+                    <option value="9">09 / 10</option>
+                    <option value="10">10 / 11</option>
+                    <option value="11">11 / 12</option>
+                    <option value="12">12 / 13</option>
+                    <option value="13">13 / 14</option>
+                    <option value="14">14 / 15</option>
+                    <option value="15">15 / 16</option>
+                    <option value="16">16 / 17</option>
+                    <option value="17">17 / 18</option>
+                    <option value="18">18 / 19</option>
+                    <option value="19">19 / 20</option>
+                    <option value="20">20 / 21</option>
+                    <option value="21">21 / 22</option>
+                    <option value="22">22 / 23</option>
+                    <option value="23">23 / 24</option>
+                </select> 
+                <input type="button" id="loadEvents" value="Load events" />
+                <input type="button" id="simEvents" value="Start simulation" />
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
+                    <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+                </a>
+            </p>
+        </div>
+        <div id="page2">
+            <div id="statList" />
+            <div id="detMap" />
+            <div id="logo">
+                <a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a>
+            </div>
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
+                <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+            </a>
+            <div id="dashboard">
+                <table>
+                    <tr>
+                        <td colspan=2>energy</td><td><input id="energy" type=text value=5e12 size=5  /></td>
+                    </tr>
+                    <tr>
+                        <td colspan=2></td><td>&#952; [<sup>o</sup>]</td><td>&#934; [<sup>o</sup>]</td>
+                    </tr>
+                    <tr>
+                        <td colspan=2>direction</td>
+                        <td><input id="theta" type=text value=0 size=5 /></td>
+                        <td><input id="phi" type=text value=0 size=5 /></td>
+                    </tr>
+                    <tr>
+                        <td colspan=2></td><td>r [m]</td><td>&#945; [<sup>o</sup>]</td>
+                    </tr>
+                    <tr>
+                    <td colspan=2>shower core</td>
+                        <td><input id="r" type=text value=0 size=5 /></td>
+                        <td><input id="alfa" type=text value=0 size=5 /></td>
+                    </tr>
+                    <tr>
+                        <td colspan=4><input type="button" id="simShow" value="Simulate shower" style='width:200px;'></input></td>
+                    </tr>
+                    <tr>
+                        <td id="ch0">
+                            102
+                        </td>
+                        <td id="ch1">
+                            104
+                        </td>
+                        <td id="ch2">
+                            105
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
