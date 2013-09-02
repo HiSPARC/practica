@@ -35,11 +35,11 @@
                 var quantity = new Array('<td>r [m]</td>','<td>&#945; [<sup>o</sup>]</td>','<td>&#946; [<sup>o</sup>]</td>','<td>MIP-peak [mV]</td>','<td>n [MIP]</td>','<td>t [ns]</td>');
                 var captionTab = "<tr><td>detector</td><td align='center' class='det1' style='border-radius:2px;'>1</td>";
                 var rRow = "";
-                var alfaRow = "";
-                var betaRow = "";
-                var peakRow = "";
-                var mipRow = "";
-                var nanoRow = "";
+                var alfaRow = "<tr>";
+                var betaRow = "<tr>";
+                var peakRow = "<tr>";
+                var mipRow = "<tr>";
+                var nanoRow = "<tr>";
                 captionTab += "<td align='center' class='det2' style='border-radius:2px;'>2</td>";
                 captionTab += "<td align='center' class='det3' style='border-radius:2px;'>3</td>";
                 captionTab += "<td align='center' class='det4' style='border-radius:2px;'>4</td></tr>";
@@ -50,9 +50,13 @@
                     detMap += "<div id='detectorMap0'>" + statInfo[i].number;
                     detMap += '<img id="gps" src="images/gps.png" alt="gps" />';
                     for(j=0; j<statInfo[i].scintillators; j++){
-/*                        rRow += '<td><input id="r'+i+j+'" type=text value='++' size=5 /></td>';
-                        alfaRow += '';*/
-                        detMap += '<img id="detector' + i + j + '" src="images/detector' + i+ '.png" alt="' + i + j + '" />'
+                        rRow += '<td><input id="r'+i+j+'" type=text value='+0+' size=5 /></td>';
+                        alfaRow += '<td><input id="alfa'+i+j+'" type=text value='+0+' size=5 /></td>';
+                        betaRow += '<td><input id="beta'+i+j+'" type=text value='+0+' size=5 /></td>';
+                        peakRow += '<td><input id="MIP-peak'+i+j+'" type=text value='+0+' size=5 /></td>';
+                        mipRow += '<td><input id="mip'+i+j+'" type=text value='+0+' size=5 /></td>';
+                        nanoRow += '<td><input id="nano'+i+j+'" type=text value='+0+' size=5 /></td>';
+                        detMap += '<img id="detector' + i + j + '" src="images/detector' + j+ '.png" alt="detector' + i + j + '" />'
                     }
                     detMap += "</div>";
                 }
