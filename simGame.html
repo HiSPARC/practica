@@ -181,7 +181,7 @@
                         firstTime = '23:59:59:999999999';
                         for(i = 0; i < station.length; i++){
                             events[i][0][3] = padZero(events[i][0][3], 9);
-                                time = events[i][0][1] + ':' + events[i][0][3];
+                            time = events[i][0][1] + ':' + events[i][0][3];
                             if(time < firstTime){
                                 firstTime = time; 
                                 first = i;
@@ -222,14 +222,14 @@
                             subOut.length = 0;
                             while((iSub >= 0)&&(subclusters[iSub].number >= clusters[iCl].number)){
                                 subOut.splice(0,0,subclusters[iSub]);
-                            iSub--;
+                                iSub--;
                             }
                             makeMenu('tabs-'+clusters[iCl].number, subOut);
                             for(i=subOut.length-1; i >= 0; i--){
                                 $('#tabs-'+subOut[i].number).tabs();
                                 while((iStat >= 0)&&(stations[iStat].number > subOut[i].number)){
                                     $('#tabs-'+clusters[iCl].number+'-'+subOut[i].number).prepend("<p><input type='checkbox' onchange='changeSelect("+stations[iStat].number+")')/> " +stations[iStat].number+" "+stations[iStat].name+"</p>");
-                                iStat--;
+                                    iStat--;
                                 }
                             }
                         }
